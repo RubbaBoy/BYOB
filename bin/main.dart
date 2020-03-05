@@ -7,8 +7,7 @@ void main(List<String> args) {
   final status = args[2];
   final color = args[3];
   var path = args[4];
-
-  print('token: ${args[5]}');
+  final token = args[5];
 
   if (!path.startsWith('/')) {
     path = '/$path';
@@ -49,7 +48,7 @@ void main(List<String> args) {
     'color': color
   };
 
-  final remote = 'https://${env['GITHUB_ACTOR']}:${args[5]}@github.com/${env['GITHUB_REPOSITORY']}.git';
+  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
   print('remote = $remote');
 
