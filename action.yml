@@ -1,25 +1,25 @@
 # action.yml
-name: 'BYOB'
+name: 'Bring Your Own Badge'
 author: 'RubbaBoy'
-description: 'Bring Your Oan Badge - Custom badges based off of GitHub Actions'
+description: 'BYOB - Custom badges based off of GitHub Actions'
 inputs:
   name:
-    description: 'The alphanumeric (-_ included) name of the badge, 32 chars or less'
+    description: 'The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes.'
     required: true
   label:
-    description: 'The left label of the badge, usually static based on results'
+    description: 'The left label of the badge, usually static.'
     required: true
   status:
-    description: 'The right status as the badge'
+    description: 'The right status as the badge, usually based on results.'
     required: true
   color:
-    description: 'The hex color of the badge'
+    description: 'The hex color of the badge.'
     required: true
   github_token:
     description: 'The GitHub token to push to the current repo. Suggested as secrets.GITHUB_TOKEN'
     required: true
   path:
-    description: 'The absolute file path to store the JSON data as.'
+    description: 'The absolute file path to store the JSON data to.'
     required: false
     default: '/shields.json'
 runs:
