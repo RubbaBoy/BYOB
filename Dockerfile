@@ -12,8 +12,7 @@ FROM frolvlad/alpine-glibc:alpine-3.9_glibc-2.29
 
 COPY --from=dart-runtime /app/server /server
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
+RUN apk update && apk upgrade && \
+    apk add --no-cache git
 
 ENTRYPOINT ["/server"]
