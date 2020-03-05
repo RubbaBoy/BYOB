@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+var workingDir;
+
 void main(List<String> args) {
   final name = args[0];
   final label = args[1];
@@ -30,20 +32,20 @@ void main(List<String> args) {
 
   runCommand('git', ['clone', remote, 'repo']);
 
-  final parent = Directory('${Directory.current.absolute.path}/repo');
+  workingDir = Directory('${Directory.current.absolute.path}/repo');
 
-  print('Exists ${parent.absolute.path}: ${parent.existsSync()}');
+  print('Exists ${workingDir.absolute.path}: ${workingDir.existsSync()}');
 
-  final shields = parent.listSync().firstWhere(
-      (entity) => entity.path.replaceFirst(parent.path, '') == path,
-      orElse: () => File('${parent.path}$path')
+  final shields = workingDir.listSync().firstWhere(
+      (entity) => entity.path.replaceFirst(workingDir.path, '') == path,
+      orElse: () => File('${workingDir.path}$path')
         ..parent.createSync()
         ..createSync()) as File;
 
   print('Found file: ${shields.absolute.path}');
 
   print(
-      'Absolute all:\n${parent.listSync().map((entity) => entity.absolute.path).join(', ')}');
+      'Absolute all:\n${workingDir.listSync().map((entity) => entity.absolute.path).join(', ')}');
 
   final contents = safeDecode(shields.readAsStringSync());
 
@@ -56,7 +58,7 @@ void main(List<String> args) {
   runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
   runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
   runCommand(
-      'git', ['add', shields.absolute.path.replaceFirst(parent.path, '')]);
+      'git', ['add', '${shields.absolute.path.replaceFirst(workingDir.path, '')}']);
   runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
 
   print('Pushing...');
@@ -67,7 +69,7 @@ void main(List<String> args) {
 
 void runCommand(String cmd, List<String> args) {
   print('$cmd ${args.join(' ')}');
-  final process = Process.runSync(cmd, args);
+  final process = Process.runSync(cmd, args, workingDirectory: workingDir);
   print(process.stdout);
   print(process.stderr);
 }
