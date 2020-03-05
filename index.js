@@ -1,3 +1,7 @@
+// This file is deployed to Runkit, to allow for rapid development and to allow others to host their own versions of this.
+// The first chunk of code between this and the next comment are for local development, and should not be
+// copied over when deploying. The same goes with the last few lines, as denoted by comments.
+
 const express = require("express");
 
 function tonicExpress(anExport) {
