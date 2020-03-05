@@ -30,10 +30,9 @@ void main(List<String> args) {
 
   print('remote = $remote');
 
-  workingDir = Directory('${Directory.current.absolute.path}/repo')
-    ..createSync();
+  runCommand('git', ['clone', remote, 'repo'], false);
 
-  runCommand('git', ['clone', remote, 'repo']);
+  workingDir = Directory('${Directory.current.absolute.path}/repo');
 
   final shields = workingDir.listSync().firstWhere(
       (entity) => entity.path.replaceFirst(workingDir.path, '') == path,
@@ -66,9 +65,9 @@ void main(List<String> args) {
   print('Goodbye!');
 }
 
-void runCommand(String cmd, List<String> args) {
+void runCommand(String cmd, List<String> args, [bool includeWorkingDir = true]) {
   print('$cmd ${args.join(' ')}');
-  final process = Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path);
+  final process = includeWorkingDir ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path) : Process.runSync(cmd, args);
   print(process.stdout);
   print(process.stderr);
 }
