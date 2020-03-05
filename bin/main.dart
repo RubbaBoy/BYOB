@@ -51,12 +51,9 @@ void main(List<String> args) {
 
   shields.writeAsStringSync(jsonEncode(contents));
 
-//  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
-
   runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
   runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
-  runCommand(
-      'git', ['add', '${shields.absolute.path.replaceFirst(workingDir.path, '')}']);
+  runCommand('git', ['add', '${shields.absolute.path}']);
   runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
 
   print('Pushing...');
@@ -65,9 +62,12 @@ void main(List<String> args) {
   print('Goodbye!');
 }
 
-void runCommand(String cmd, List<String> args, [bool includeWorkingDir = true]) {
+void runCommand(String cmd, List<String> args,
+    [bool includeWorkingDir = true]) {
   print('$cmd ${args.join(' ')}');
-  final process = includeWorkingDir ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path) : Process.runSync(cmd, args);
+  final process = includeWorkingDir
+      ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path)
+      : Process.runSync(cmd, args);
   print(process.stdout);
   print(process.stderr);
 }
