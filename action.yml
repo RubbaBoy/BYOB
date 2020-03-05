@@ -15,10 +15,6 @@ inputs:
   color:
     description: 'The hex color of the badge'
     required: true
-  type:
-    description: 'The type of file to store the data as in the local repo. May be either "yaml" or "json".'
-    required: false
-    default: 'yaml'
   path:
     description: 'The absolute file path to store the data as. The file extension may override tye "type" input.'
     required: false
@@ -31,5 +27,4 @@ runs:
     - ${{ inputs.label }}
     - ${{ inputs.status }}
     - ${{ inputs.color }}
-    - ${{ inputs.type }}
     - ${{ inputs.path }}
