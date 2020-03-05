@@ -30,11 +30,10 @@ void main(List<String> args) {
 
   print('remote = $remote');
 
-  workingDir = Directory('${Directory.current.absolute.path}/repo');
+  workingDir = Directory('${Directory.current.absolute.path}/repo')
+    ..createSync();
 
   runCommand('git', ['clone', remote, 'repo']);
-
-  print('Exists ${workingDir.absolute.path}: ${workingDir.existsSync()}');
 
   final shields = workingDir.listSync().firstWhere(
       (entity) => entity.path.replaceFirst(workingDir.path, '') == path,
