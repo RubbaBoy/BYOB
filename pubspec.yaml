@@ -1,0 +1,8 @@
+name: BYOB
+description: A GitHub Action to create custom badges.
+# version: 1.0.0
+# homepage: https://github.com/RubbaBoy/BYOB
+# author: RubbaBoy <adamyarris@gmail.com>
+
+environment:
+  sdk: '>=2.5.0 <3.0.0'

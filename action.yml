@@ -1,0 +1,35 @@
+# action.yml
+name: 'BYOB'
+author: 'RubbaBoy'
+description: 'Bring Your Oan Badge - Custom badges based off of GitHub Actions'
+inputs:
+  name:
+    description: 'The alphanumeric (-_ included) name of the badge, 32 chars or less'
+    required: true
+  label:
+    description: 'The left label of the badge, usually static based on results'
+    required: true
+  status:
+    description: 'The right status as the badge'
+    required: true
+  color:
+    description: 'The hex color of the badge'
+    required: true
+  type:
+    description: 'The type of file to store the data as in the local repo. May be either "yaml" or "json".'
+    required: false
+    default: 'yaml'
+  path:
+    description: 'The absolute file path to store the data as. The file extension may override tye "type" input.'
+    required: false
+    default: '/shields.yaml'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.name }}
+    - ${{ inputs.label }}
+    - ${{ inputs.status }}
+    - ${{ inputs.color }}
+    - ${{ inputs.type }}
+    - ${{ inputs.path }}
