@@ -56,7 +56,24 @@ void main(List<String> args) {
   Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'], runInShell: true);
   Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
 
-  print('out:');
+  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
+
+  print('out1:');
+  final pushData2 = Process.runSync('git', ['version'], runInShell: false);
+  print(pushData2.stdout);
+  print(pushData2.stderr);
+
+  print('out3:');
+  final pushData3 = Process.runSync('where', ['git'], runInShell: false);
+  print(pushData3.stdout);
+  print(pushData3.stderr);
+
+  print('out4:');
+  final pushData4 = Process.runSync('where', ['git'], runInShell: true);
+  print(pushData4.stdout);
+  print(pushData4.stderr);
+
+  print('out2:');
   final pushData = Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true);
   print(pushData.stdout);
   print(pushData.stderr);
