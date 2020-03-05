@@ -2,6 +2,9 @@
 name: 'Bring Your Own Badge'
 author: 'RubbaBoy'
 description: 'BYOB - Custom badges based off of GitHub Actions'
+branding:
+  icon: award
+  color: blue
 inputs:
   name:
     description: 'The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes.'
