@@ -48,7 +48,7 @@ void main(List<String> args) {
     'color': color
   };
 
-  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
+  final remote = 'https://$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
   print('remote = $remote');
 
@@ -56,7 +56,8 @@ void main(List<String> args) {
   Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'], runInShell: true);
   Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
 
-//  Process.runSync('git', ['push', '-m', 'Updating tag "$name"', '-a']);
+  print('out:');
+  print(Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true).stdout);
 
   shields.writeAsStringSync(jsonEncode(contents));
 
