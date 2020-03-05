@@ -57,7 +57,9 @@ void main(List<String> args) {
   Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
 
   print('out:');
-  print(Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true).stdout);
+  final pushData = Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true);
+  print(pushData.stdout);
+  print(pushData.stderr);
 
   shields.writeAsStringSync(jsonEncode(contents));
 
