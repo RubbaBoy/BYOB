@@ -16,7 +16,7 @@ inputs:
     description: 'The hex color of the badge'
     required: true
   github_token:
-    description: 'The GitHub token to push to the current repo. Suggested as ${{ secrets.GITHUB_TOKEN }}'
+    description: 'The GitHub token to push to the current repo. Suggested as secrets.GITHUB_TOKEN'
     required: true
   path:
     description: 'The absolute file path to store the JSON data as.'
