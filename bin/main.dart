@@ -22,23 +22,28 @@ void main(List<String> args) {
 
   print('Files:');
 
-  final dir = Directory.current.absolute;
-  print('Absolute: ${dir.path}');
+  final env = Platform.environment;
+  final remote =
+      'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
-  final shields = dir.listSync().firstWhere(
-      (entity) => entity.path.replaceFirst(dir.path, '') == path,
-      orElse: () =>
-          File('${dir.path}$path')..parent.createSync()..createSync()) as File;
+  print('remote = $remote');
+
+  runCommand('git', ['clone', remote, 'repo']);
+
+  final parent = Directory('${Directory.current.absolute.path}/repo');
+
+  print('Exists ${parent.absolute.path}: ${parent.existsSync()}');
+
+  final shields = parent.listSync().firstWhere(
+      (entity) => entity.path.replaceFirst(parent.path, '') == path,
+      orElse: () => File('${parent.path}$path')
+        ..parent.createSync()
+        ..createSync()) as File;
 
   print('Found file: ${shields.absolute.path}');
 
   print(
-      'Absolute all:\n${dir.listSync().map((entity) => entity.absolute.path).join(', ')}');
-
-  final env = Platform.environment;
-  print(env);
-  print(env['GITHUB_ACTOR']);
-  print(env['REPOSITORY']);
+      'Absolute all:\n${parent.listSync().map((entity) => entity.absolute.path).join(', ')}');
 
   final contents = safeDecode(shields.readAsStringSync());
 
@@ -46,13 +51,13 @@ void main(List<String> args) {
 
   shields.writeAsStringSync(jsonEncode(contents));
 
-  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
-
-  print('remote = $remote');
+//  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
   runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
   runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
-  runCommand('git', ['commit', '-m', 'Updating tag "$name"', '-a']);
+  runCommand(
+      'git', ['add', shields.absolute.path.replaceFirst(parent.path, '')]);
+  runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
 
   print('Pushing...');
   runCommand('git', ['push', remote, 'HEAD']);
@@ -61,9 +66,10 @@ void main(List<String> args) {
 }
 
 void runCommand(String cmd, List<String> args) {
- final process = Process.runSync(cmd, args);
- print(process.stdout);
- print(process.stderr);
+  print('$cmd ${args.join(' ')}');
+  final process = Process.runSync(cmd, args);
+  print(process.stdout);
+  print(process.stderr);
 }
 
 dynamic safeDecode(String json) {
