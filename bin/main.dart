@@ -34,18 +34,18 @@ void main(List<String> args) {
   print(
       'Absolute all:\n${dir.listSync().map((entity) => entity.absolute.path).join(', ')}');
 
-  final contents = jsonDecode(shields.readAsStringSync());
+  final env = Platform.environment;
+  print(env);
+  print(env['GITHUB_ACTOR']);
+  print(env['REPOSITORY']);
+
+  final contents = safeDecode(shields.readAsStringSync());
 
   contents[name] = {
     'label': label,
     'status': status,
     'color': color
   };
-
-  final env = Platform.environment;
-  print(env);
-  print(env['GITHUB_ACTOR']);
-  print(env['REPOSITORY']);
 
   Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
   Process.runSync('git', ['config', '--local', 'user.name', 'BYOB']);
@@ -58,4 +58,12 @@ void main(List<String> args) {
   shields.writeAsStringSync(jsonEncode(contents));
 
   print('Goodbye!');
+}
+
+dynamic safeDecode(String json) {
+  try {
+    return jsonDecode(json);
+  } catch (_) {
+    return {};
+  }
 }

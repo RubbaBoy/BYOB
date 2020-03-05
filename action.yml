@@ -16,9 +16,9 @@ inputs:
     description: 'The hex color of the badge'
     required: true
   path:
-    description: 'The absolute file path to store the data as. The file extension may override tye "type" input.'
+    description: 'The absolute file path to store the JSON data as.'
     required: false
-    default: '/shields.yaml'
+    default: '/shields.json'
 runs:
   using: 'docker'
   image: 'Dockerfile'
