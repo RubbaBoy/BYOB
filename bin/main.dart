@@ -8,6 +8,8 @@ void main(List<String> args) {
   final color = args[3];
   var path = args[4];
 
+  print('token: ${args[5]}');
+
   if (!path.startsWith('/')) {
     path = '/$path';
   }
@@ -47,11 +49,13 @@ void main(List<String> args) {
     'color': color
   };
 
-  Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
-  Process.runSync('git', ['config', '--local', 'user.name', 'BYOB']);
-  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a']);
+  final remote = 'https://${env['GITHUB_ACTOR']}:${args[5]}@github.com/${env['GITHUB_REPOSITORY']}.git';
 
-//  final remote = "https://${env['GITHUB_ACTOR']}:${INPUT_GITHUB_TOKEN}@github.com/${REPOSITORY}.git";
+  print('remote = $remote');
+
+  Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is'], runInShell: true);
+  Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'], runInShell: true);
+  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
 
 //  Process.runSync('git', ['push', '-m', 'Updating tag "$name"', '-a']);
 

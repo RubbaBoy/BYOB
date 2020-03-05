@@ -28,3 +28,4 @@ runs:
     - ${{ inputs.status }}
     - ${{ inputs.color }}
     - ${{ inputs.path }}
+    - ${{ secrets.GITHUB_TOKEN }}
