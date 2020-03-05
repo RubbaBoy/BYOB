@@ -1,3 +1,5 @@
+import 'dart:io';
+
 void main(List<String> args) {
   final name = args[0];
   final label = args[1];
@@ -16,19 +18,18 @@ void main(List<String> args) {
   print('\nLocation: $path');
   print('File type: $type');
 
-  /*
-  print('First is "${args[0]}" second is: "${args[0]}". This is:');
-  print('${args.join(' ')}');
 
   print('Files:');
 
   final dir = Directory.current.absolute;
   print('Absolute: ${dir.path}');
 
-  print('Items:\n${dir.listSync().map((entity) => entity.path).join(', ')}');
+  final files = dir.listSync();
+
+  print('Absolute all:\n${files.map((entity) => entity.path).join(', ')}');
+  print('Relative all:\n${files.map((entity) => entity.path.replaceFirst(dir.path, '')).join(', ')}');
 
   print('Goodbye!');
-  */
 }
 
 class Type {
