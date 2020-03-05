@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-var workingDir;
+Directory workingDir;
 
 void main(List<String> args) {
   final name = args[0];
@@ -69,7 +69,7 @@ void main(List<String> args) {
 
 void runCommand(String cmd, List<String> args) {
   print('$cmd ${args.join(' ')}');
-  final process = Process.runSync(cmd, args, workingDirectory: workingDir);
+  final process = Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path);
   print(process.stdout);
   print(process.stderr);
 }
