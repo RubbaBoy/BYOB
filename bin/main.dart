@@ -30,9 +30,9 @@ void main(List<String> args) {
 
   print('remote = $remote');
 
-  runCommand('git', ['clone', remote, 'repo']);
-
   workingDir = Directory('${Directory.current.absolute.path}/repo');
+
+  runCommand('git', ['clone', remote, 'repo']);
 
   print('Exists ${workingDir.absolute.path}: ${workingDir.existsSync()}');
 
