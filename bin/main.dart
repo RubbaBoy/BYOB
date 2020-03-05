@@ -42,41 +42,58 @@ void main(List<String> args) {
 
   final contents = safeDecode(shields.readAsStringSync());
 
-  contents[name] = {
-    'label': label,
-    'status': status,
-    'color': color
-  };
+  contents[name] = {'label': label, 'status': status, 'color': color};
 
   final remote = 'https://$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
   print('remote = $remote');
 
-  Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is'], runInShell: true);
-  Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'], runInShell: true);
-  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
+  Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is'],
+      runInShell: true);
+  Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'],
+      runInShell: true);
+  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'],
+      runInShell: true);
 
-  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'], runInShell: true);
+  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'],
+      runInShell: true);
 
-  print('out1:');
-  final pushData2 = Process.runSync('git', ['version'], runInShell: false);
-  print(pushData2.stdout);
-  print(pushData2.stderr);
+  try {
+    print('out1:');
+    final pushData2 = Process.runSync('git', ['version'], runInShell: false);
+    print(pushData2.stdout);
+    print(pushData2.stderr);
+  } catch (e) {
+    print(e);
+  }
 
-  print('out3:');
-  final pushData3 = Process.runSync('where', ['git'], runInShell: false);
-  print(pushData3.stdout);
-  print(pushData3.stderr);
+  try {
+    print('out3:');
+    final pushData3 = Process.runSync('where', ['git'], runInShell: false);
+    print(pushData3.stdout);
+    print(pushData3.stderr);
+  } catch (e) {
+    print(e);
+  }
 
-  print('out4:');
-  final pushData4 = Process.runSync('where', ['git'], runInShell: true);
-  print(pushData4.stdout);
-  print(pushData4.stderr);
+  try {
+    print('out4:');
+    final pushData4 = Process.runSync('where', ['git'], runInShell: true);
+    print(pushData4.stdout);
+    print(pushData4.stderr);
+  } catch (e) {
+    print(e);
+  }
 
-  print('out2:');
-  final pushData = Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true);
-  print(pushData.stdout);
-  print(pushData.stderr);
+  try {
+    print('out2:');
+    final pushData =
+        Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true);
+    print(pushData.stdout);
+    print(pushData.stderr);
+  } catch (e) {
+    print(e);
+  }
 
   shields.writeAsStringSync(jsonEncode(contents));
 
