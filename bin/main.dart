@@ -44,60 +44,26 @@ void main(List<String> args) {
 
   contents[name] = {'label': label, 'status': status, 'color': color};
 
-  final remote = 'https://$token@github.com/${env['GITHUB_REPOSITORY']}.git';
+  shields.writeAsStringSync(jsonEncode(contents));
+
+  final remote = 'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
   print('remote = $remote');
 
-  Process.runSync('git', ['config', '--local', 'user.email', 'byob@yarr.is'],
-      runInShell: true);
-  Process.runSync('git', ['config', '--local', 'user.name', 'BYOB'],
-      runInShell: true);
-  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'],
-      runInShell: true);
+  runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
+  runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
+  runCommand('git', ['commit', '-m', 'Updating tag "$name"', '-a']);
 
-  Process.runSync('git', ['commit', '-m', 'Updating tag "$name"', '-a'],
-      runInShell: true);
-
-  try {
-    print('out1:');
-    final pushData2 = Process.runSync('git', ['version'], runInShell: false);
-    print(pushData2.stdout);
-    print(pushData2.stderr);
-  } catch (e) {
-    print(e);
-  }
-
-  try {
-    print('out3:');
-    final pushData3 = Process.runSync('where', ['git'], runInShell: false);
-    print(pushData3.stdout);
-    print(pushData3.stderr);
-  } catch (e) {
-    print(e);
-  }
-
-  try {
-    print('out4:');
-    final pushData4 = Process.runSync('where', ['git'], runInShell: true);
-    print(pushData4.stdout);
-    print(pushData4.stderr);
-  } catch (e) {
-    print(e);
-  }
-
-  try {
-    print('out2:');
-    final pushData =
-        Process.runSync('git', ['push', remote, 'HEAD'], runInShell: true);
-    print(pushData.stdout);
-    print(pushData.stderr);
-  } catch (e) {
-    print(e);
-  }
-
-  shields.writeAsStringSync(jsonEncode(contents));
+  print('Pushing...');
+  runCommand('git', ['push', remote, 'HEAD']);
 
   print('Goodbye!');
+}
+
+void runCommand(String cmd, List<String> args) {
+ final process = Process.runSync(cmd, args);
+ print(process.stdout);
+ print(process.stderr);
 }
 
 dynamic safeDecode(String json) {
