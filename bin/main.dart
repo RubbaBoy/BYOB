@@ -46,8 +46,6 @@ void main(List<String> args) {
 void cloneRepo(String branch, String remote) {
   print('About to clone! In current:');
   print(runCommand('ls', [], false));
-  print('In /repo:');
-  print(runCommand('ls', []));
 
   print(runCommand('git', ['clone', remote, 'repo'], false));
 
