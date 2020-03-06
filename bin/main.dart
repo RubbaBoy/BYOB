@@ -20,7 +20,7 @@ void main(List<String> args) {
   final remote =
       'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
-  workingDir = Directory('/github/repo');
+  workingDir = Directory('${Directory.current.absolute.path}/repo-${DateTime.now().millisecondsSinceEpoch}');
 
   cloneRepo(branch, remote);
 
@@ -41,12 +41,10 @@ void main(List<String> args) {
   runCommand('git', ['add', '.']);
   runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
   runCommand('git', ['push', remote, 'HEAD']);
+  runCommand('rm', ['-rf', workingDir.absolute.path], false);
 }
 
 void cloneRepo(String branch, String remote) {
-  print('About to clone! /github/repo exists:');
-  print(Directory('/github/repo').existsSync());
-
   print(runCommand('git', ['clone', remote, 'repo'], false));
 
   final branchesCommand = runCommand('git', ['branch', '-a']);
