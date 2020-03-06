@@ -25,6 +25,10 @@ inputs:
     description: 'The absolute file path to store the JSON data to.'
     required: false
     default: '/shields.json'
+  branch:
+    description: 'The branch to contain the shields file.'
+    required: false
+    default: 'shields'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -35,3 +39,4 @@ runs:
     - ${{ inputs.color }}
     - ${{ inputs.path }}
     - ${{ inputs.github_token }}
+    - ${{ inputs.branch }}
