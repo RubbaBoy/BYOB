@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+Map<String, String> get env => Platform.environment;
+
 Directory workingDir;
 
 void main(List<String> args) {
@@ -16,7 +18,6 @@ void main(List<String> args) {
     path = '/$path';
   }
 
-  final env = Platform.environment;
   final remote =
       'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
@@ -60,13 +61,10 @@ void cloneRepo(String branch, String remote, String cloneInto) {
     runCommand('git', ['checkout', '--orphan', branch]);
     runCommand('git', ['rm', '-rf', '.']);
   }
-
-  print('Done with repo stuff');
 }
 
 String runCommand(String cmd,
     [List<String> args = const [], bool includeWorkingDir = true]) {
-  print('$cmd ${args.join(' ')}');
   final process = includeWorkingDir
       ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path)
       : Process.runSync(cmd, args);

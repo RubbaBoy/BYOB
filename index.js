@@ -50,37 +50,31 @@ app.get(["/:nameorg/:repo/:name/:branch?", "/:nameorg/:repo/:name/:branch/*"], a
     let path = req.params['0'] || 'shields.json';
 
     if (!badgeNamePattern.test(badgeName) || !namePattern.test(nameorg) || !repoPattern.test(repo) || !branchPattern.test(branch)) {
-        return result.send(createBadge('BYOB', 'Invalid request', error));
+        return sendResult(result, 'BYOB', 'Invalid request', error);
     }
 
     request(`https://raw.githubusercontent.com/${nameorg}/${repo}/${branch}/${path}`, {}, (err, res, body) => {
         if (res.statusCode < 200 || res.statusCode >= 300) {
-            return result.send(createBadge('BYOB', 'No config found', error));
+            return sendResult(result, 'BYOB', 'No config found', error);
         }
 
         let parsed = loadBody(path, body);
 
         if (parsed === undefined) {
-            return result.send(createBadge('BYOB', 'Invalid file', error));
+            return sendResult(result, 'BYOB', 'Invalid file', error);
         }
 
         let currBadge = parsed[badgeName];
 
         if (currBadge === undefined) {
-            return result.send(createBadge('BYOB', 'Badge not found', error));
+            return sendResult(result, 'BYOB', 'Badge not found', error);
         }
 
-        request(`https://badgen.net/badge/${currBadge['label'] || 'N/A'}/${currBadge['status'] || 'N/A'}/${currBadge['color'] || 'N/A'}?cache=300`, {}, (e, r, b) => {
-            result.setHeader('ETag', Date.now());
-            result.setHeader('Cache-Control', 'no-cache');
-            result.setHeader('Pragma', 'no-cache');
-            result.setHeader('Content-Type', 'image/svg+xml');
-            result.send(b);
-        })
+        sendResult(result, currBadge['label'], currBadge['status'], currBadge['color']);
     })
 })
 
-app.get('*', (req, res) => res.send(createBadge('BYOB', 'error', error)))
+app.get('*', (req, res) => sendResult(res, 'BYOB', 'error', error))
 
 function loadBody(path, body) {
     try {
@@ -90,8 +84,18 @@ function loadBody(path, body) {
     }
 }
 
-function createBadge(label, status, color) {
-    return {'subject': label || 'N/A', 'status': status || 'N/A', 'color': color || 'FF0000'};
+function sendResult(result, label, status, color) {
+    return request(badgeUrl(label, status, color), {}, (e, r, b) => {
+        result.setHeader('ETag', Date.now());
+        result.setHeader('Cache-Control', 'no-cache');
+        result.setHeader('Pragma', 'no-cache');
+        result.setHeader('Content-Type', 'image/svg+xml');
+        result.send(b);
+    })
+}
+
+function badgeUrl(label, status, color) {
+    return `https://badgen.net/badge/${label || 'N/A'}/${status || 'N/A'}/${color || 'N/A'}?cache=300`;
 }
 
 

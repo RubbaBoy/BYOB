@@ -18,7 +18,7 @@ jobs:
       - id: date
         run: echo "##[set-output name=data;]$(date)"
       - name: Time badge
-        uses: RubbaBoy/BYOB@v1.0.0
+        uses: RubbaBoy/BYOB@v1.1.0
         with:
           NAME: time
           LABEL: 'Updated at'
@@ -47,7 +47,7 @@ Only up to `branch` is required. The following are examples of more advanced bad
 
 #### Basic off-master badge
 
-Badges may be used off of the master branch. For example, on the `dev` branch:
+Badges may be used off of the default orphan `shields` branch. For example, on the `dev` branch:
 
 ```markdown
 ![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time/dev)
@@ -58,10 +58,10 @@ Badges may be used off of the master branch. For example, on the `dev` branch:
 Badges may also use custom JSON paths, allowing for multiple files per project for whatever your usecase may be. The branch must be included in this URL. The following shows a path to `/child/dir/badges.json`
 
 ```markdown
-![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time/master/child/dir/badges.json)
+![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time/shields/child/dir/badges.json)
 ```
 
-
+An example of a repo with multiple badges may be found here: [BYOBTest](https://github.com/RubbaBoy/BYOBTest)
 
 ### Inputs
 
@@ -75,10 +75,11 @@ All inputs are required except for the last one displayed below.
 | color        |                 | The hex color of the badge.                                  |
 | github_token |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |
 | path         | `/shields.json` | The absolute file path to store the JSON data to.            |
+| branch       | `shields`       | The branch to contain the shields file.                      |
 
 ## How It Works
 
-BYOB is very simple, consisting of the GitHub Action and a small server-side script. The Action updates a branch-specific json file, containing data about all badges available (Any repo may use these). Each badge has a name associated with it only used for identification purposes, and is not displayed.
+BYOB is very simple, consisting of the GitHub Action and a small server-side script. The Action updates a json file containing all badge info. This is by default the `shields` branch as to keep the commit history clean on working branches. Each badge has a name associated with it only used for identification purposes, and is not displayed.
 
 When the Action is invoked, it will update only the badge names that have changed, to allow for more persistent data. Whenever a badge is invoked, a push is made to the repo updating the file. No badge data is stored server-side.
 
