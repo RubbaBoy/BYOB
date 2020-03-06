@@ -20,7 +20,7 @@ void main(List<String> args) {
   final remote =
       'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
-  workingDir = Directory('${Directory.current.absolute.path}/repo');
+  workingDir = Directory('/github/repo');
 
   cloneRepo(branch, remote);
 
@@ -44,8 +44,8 @@ void main(List<String> args) {
 }
 
 void cloneRepo(String branch, String remote) {
-  print('About to clone! In current:');
-  print(runCommand('ls', [], false));
+  print('About to clone! /github/repo exists:');
+  print(Directory('/github/repo').existsSync());
 
   print(runCommand('git', ['clone', remote, 'repo'], false));
 
