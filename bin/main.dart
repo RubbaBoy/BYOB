@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-Directory workingDir;
+bool startupTasks = true;
+Directory _workingDir;
 
 void main(List<String> args) {
   final name = args[0];
@@ -20,13 +21,13 @@ void main(List<String> args) {
   final remote =
       'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
 
-  workingDir = Directory('${Directory.current.absolute.path}/repo');
+  _workingDir = Directory('/github/repo');
 
   cloneRepo(branch, remote);
 
-  final shields = workingDir.listSync().firstWhere(
-      (entity) => entity.path.replaceFirst(workingDir.path, '') == path,
-      orElse: () => File('${workingDir.path}$path')
+  final shields = _workingDir.listSync().firstWhere(
+      (entity) => entity.path.replaceFirst(_workingDir.path, '') == path,
+      orElse: () => File('${_workingDir.path}$path')
         ..parent.createSync()
         ..createSync()) as File;
 
@@ -36,37 +37,48 @@ void main(List<String> args) {
 
   shields.writeAsStringSync(jsonEncode(contents));
 
-  runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
-  runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
+  if (startupTasks) {
+    runCommand('git', ['config', '--local', 'user.email', 'byob@yarr.is']);
+    runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
+  }
+
   runCommand('git', ['add', '.']);
   runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
   runCommand('git', ['push', remote, 'HEAD']);
 }
 
 void cloneRepo(String branch, String remote) {
-  print(runCommand('git', ['clone', remote, 'repo'], false));
-
-  final branchesCommand = runCommand('git', ['branch', '-a']);
-  final branches = branchesCommand.split('\n').where((line) => line.length >= 2).map((line) => line.substring(2).replaceFirst('remotes/origin/', '')).toList();
-  print('branches = $branches');
-  if (branches.contains(branch)) {
-    print('Branch "$branch" exists! Checking out...');
-    print(runCommand('git', ['checkout', branch]));
+  if (_workingDir.existsSync()) {
+    print('/github/repo exists! Don\'t clone');
+    startupTasks = false;
   } else {
-    print('Branch "$branch" not existant! Creating orphan...');
-    print(runCommand('git', ['checkout', '--orphan', branch]));
-    print(runCommand('git', ['rm', '-rf', '.']));
+    print('Clone! It doesn\'t exist');
+
+    print(runCommand('git', ['clone', remote, 'repo'], Directory('/github')));
+
+    final branchesCommand = runCommand('git', ['branch', '-a']);
+    final branches = branchesCommand.split('\n').where((line) =>
+    line.length >= 2)
+        .map((line) => line.substring(2).replaceFirst('remotes/origin/', ''))
+        .toList();
+    print('branches = $branches');
+    if (branches.contains(branch)) {
+      print('Branch "$branch" exists! Checking out...');
+      print(runCommand('git', ['checkout', branch]));
+    } else {
+      print('Branch "$branch" not existant! Creating orphan...');
+      print(runCommand('git', ['checkout', '--orphan', branch]));
+      print(runCommand('git', ['rm', '-rf', '.']));
+    }
   }
 
   print('Done with repo stuff');
 }
 
 String runCommand(String cmd, List<String> args,
-    [bool includeWorkingDir = true]) {
+    [Directory workingDir]) {
   print('$cmd ${args.join(' ')}');
-  final process = includeWorkingDir
-      ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path)
-      : Process.runSync(cmd, args);
+  final process = Process.runSync(cmd, args, workingDirectory: (workingDir ?? _workingDir).absolute.path);
   print(process.stderr);
   return process.stdout;
 }
