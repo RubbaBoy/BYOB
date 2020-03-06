@@ -46,7 +46,7 @@ app.get(["/:nameorg/:repo/:name/:branch?", "/:nameorg/:repo/:name/:branch/*"], a
     let badgeName = req.params['name'];
     let nameorg = req.params['nameorg'];
     let repo = req.params['repo'];
-    let branch = req.params['branch'] || 'master';
+    let branch = req.params['branch'] || 'shields';
     let path = req.params['0'] || 'shields.json';
 
     if (!badgeNamePattern.test(badgeName) || !namePattern.test(nameorg) || !repoPattern.test(repo) || !branchPattern.test(branch)) {

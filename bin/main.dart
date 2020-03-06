@@ -47,7 +47,7 @@ void cloneRepo(String branch, String remote) {
   print(runCommand('git', ['clone', remote, 'repo'], false));
 
   final branches = runCommand('git', ['branch', '-a']);
-  final bran = branches.split('\n').map((line) => line.substring(2)).toList();
+  final bran = branches.split('\n').where((line) => line.length >= 2).map((line) => line.substring(2)).toList();
   print('bran = $bran');
   if (bran.contains(branch)) {
     print('Branch "$branch" exists! Checking out...');
