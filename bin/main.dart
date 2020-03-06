@@ -46,10 +46,10 @@ void main(List<String> args) {
 void cloneRepo(String branch, String remote) {
   print(runCommand('git', ['clone', remote, 'repo'], false));
 
-  final branches = runCommand('git', ['branch', '-a']);
-  final bran = branches.split('\n').where((line) => line.length >= 2).map((line) => line.substring(2)).toList();
-  print('bran = $bran');
-  if (bran.contains(branch)) {
+  final branchesCommand = runCommand('git', ['branch', '-a']);
+  final branches = branchesCommand.split('\n').where((line) => line.length >= 2).map((line) => line.substring(2).replaceFirst('remotes/origin/', '')).toList();
+  print('branches = $branches');
+  if (branches.contains(branch)) {
     print('Branch "$branch" exists! Checking out...');
     print(runCommand('git', ['checkout', branch]));
   } else {
@@ -63,7 +63,7 @@ void cloneRepo(String branch, String remote) {
 
 String runCommand(String cmd, List<String> args,
     [bool includeWorkingDir = true]) {
-  print('$cmd${args.join(' ')}');
+  print('$cmd ${args.join(' ')}');
   final process = includeWorkingDir
       ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path)
       : Process.runSync(cmd, args);
