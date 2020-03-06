@@ -40,7 +40,7 @@ void main(List<String> args) {
   runCommand('git', ['config', '--local', 'user.name', 'BYOB']);
   runCommand('git', ['add', '.']);
   runCommand('git', ['commit', '-m', 'Updating tag "$name"']);
-  runCommand('git', ['push', remote, branch]);
+  runCommand('git', ['push', remote, 'HEAD']);
 }
 
 void cloneRepo(String branch, String remote) {
@@ -63,6 +63,7 @@ void cloneRepo(String branch, String remote) {
 
 String runCommand(String cmd, List<String> args,
     [bool includeWorkingDir = true]) {
+  print('$cmd${args.join(' ')}');
   final process = includeWorkingDir
       ? Process.runSync(cmd, args, workingDirectory: workingDir.absolute.path)
       : Process.runSync(cmd, args);
