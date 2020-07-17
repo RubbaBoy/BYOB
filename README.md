@@ -30,14 +30,14 @@ jobs:
 Using this badge (Named `time`) in the repository `RubbaBoy/Example` is as simple as:
 
 ```markdown
-![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time)
+![](https://byob.yarr.is/RubbaBoy/Example/time)
 ```
 
 This badge looks like:
 
-![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/BYOBTest/time)
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/time)
 
-Other URL schemes are supported as well. The general scheme after `https://runkit.io/rubbaboy/byob/branches/master/` is:
+Other URL schemes are supported as well. The general scheme after `https://byob.yarr.is/` is:
 
 ```
 /nameOrOrg/repo/badgeName/branch/path/to/shields.json
@@ -50,7 +50,7 @@ Only up to `branch` is required. The following are examples of more advanced bad
 Badges may be used off of the default orphan `shields` branch. For example, on the `dev` branch:
 
 ```markdown
-![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time/dev)
+![](https://byob.yarr.is/RubbaBoy/Example/time/dev)
 ```
 
 #### Custom Path
@@ -58,7 +58,7 @@ Badges may be used off of the default orphan `shields` branch. For example, on t
 Badges may also use custom JSON paths, allowing for multiple files per project for whatever your usecase may be. The branch must be included in this URL. The following shows a path to `/child/dir/badges.json`
 
 ```markdown
-![](https://runkit.io/rubbaboy/byob/branches/master/RubbaBoy/Example/time/shields/child/dir/badges.json)
+![](https://byob.yarr.is/RubbaBoy/Example/time/shields/child/dir/badges.json)
 ```
 
 An example of a repo with multiple badges may be found here: [BYOBTest](https://github.com/RubbaBoy/BYOBTest)
@@ -83,5 +83,5 @@ BYOB is very simple, consisting of the GitHub Action and a small server-side scr
 
 When the Action is invoked, it will update only the badge names that have changed, to allow for more persistent data. Whenever a badge is invoked, a push is made to the repo updating the file. No badge data is stored server-side.
 
-The server-side script is hosted by [Runkit](https://runkit.com/), with the actual badges hosted by [Badgen](https://badgen.net/) (Both are great services, check them out if you have a chance!). The hosted Runkit script may be found [here](https://runkit.com/rubbaboy/byob) (Or on the GitHub repo [here](https://github.com/RubbaBoy/BYOB/blob/master/index.js)), and can simply be forked and changed to use for your own purposes. It reads the given repositories' JSON file containing shields data in it, and returns a Badgen-generated badge. This uses the static Badgen `/badge`  endpoint to allow for much less caching, as paired with GitHub's aggressive caching it can be extremely slow.
+The actual badges hosted by [Badgen](https://badgen.net/) (A great service, check it out if you have a chance!). The hosted endpoint uses the code [here](https://github.com/RubbaBoy/BYOB/blob/master/index.js). It reads the given repositories' JSON file containing shields data in it, and returns a Badgen-generated badge. This uses the static Badgen `/badge`  endpoint to allow for much less caching, as paired with GitHub's aggressive caching it can be extremely slow.
 
