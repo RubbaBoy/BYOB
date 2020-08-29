@@ -4,7 +4,6 @@ const request = require('request');
 
 const badgeNamePattern = /^[a-z_\-\d]{0,32}$/i;
 const namePattern = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-const repoPattern = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,100}$/i;
 const branchPattern = /^[a-z\d_\-]{0,255}$/i;
 
 const error = 'FF0000';
@@ -20,8 +19,14 @@ app.get(["/:nameorg/:repo/:name/:branch?", "/:nameorg/:repo/:name/:branch/*"], a
     let branch = req.params['branch'] || 'shields';
     let path = req.params['0'] || 'shields.json';
 
-    if (!badgeNamePattern.test(badgeName) || !namePattern.test(nameorg) || !repoPattern.test(repo) || !branchPattern.test(branch)) {
-        return sendResult(result, 'BYOB', 'Invalid request', error);
+    if (!badgeNamePattern.test(badgeName)) {
+        return sendResult(result, 'BYOB', 'Invalid badge name in request', error);
+    }
+    if (!namePattern.test(nameorg)) {
+        return sendResult(result, 'BYOB', 'Invalid github org name in request', error);
+    }
+    if (!branchPattern.test(branch)) {
+        return sendResult(result, 'BYOB', 'Invalid branch name in request', error);
     }
 
     console.log(`https://raw.githubusercontent.com/${nameorg}/${repo}/${branch}/${path}`);
