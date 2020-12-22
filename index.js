@@ -44,7 +44,7 @@ async function handleRequest(request) {
         return sendResult('BYOB', 'Badge not found', error);
     }
 
-    return sendResult(currBadge['label'], currBadge['status'], currBadge['color']);
+    return sendResult(currBadge['label'], currBadge['icon'], currBadge['status'], currBadge['color']);
 }
 
 addEventListener("fetch", event => {
@@ -59,8 +59,8 @@ function loadBody(body) {
     }
 }
 
-async function sendResult(label, status, color) {
-    let res = await fetch(badgeUrl(label, status, color))
+async function sendResult(label, icon, status, color) {
+    let res = await fetch(badgeUrl(label, icon, status, color))
     let response = new Response(res.body, res)
     response.headers.append('ETag', Date.now())
     response.headers.append('Cache-Control', 'no-cache')
@@ -69,6 +69,21 @@ async function sendResult(label, status, color) {
     return response
 }
 
-function badgeUrl(label, status, color) {
-    return `https://badgen.net/badge/${label || 'N/A'}/${status || 'N/A'}/${color || 'N/A'}?cache=300`;
+function badgeUrl(label, icon, status, color) {
+    let statusString = 'N/A';
+    if (status !== undefined) {
+        statusString = encodeURIComponent(status)
+    }
+
+    let iconString = '';
+    if (icon !== undefined) {
+        iconString = `&icon=${icon}`
+    }
+
+    let labelString = '&label';
+    if (label !== undefined) {
+        labelString += `=${label}`
+    }
+
+    return `https://badgen.net/badge/_/${statusString}/${color || 'N/A'}?cache=300${iconString}${labelString}`
 }
