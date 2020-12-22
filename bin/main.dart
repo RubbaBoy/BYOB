@@ -8,11 +8,12 @@ Directory workingDir;
 void main(List<String> args) {
   final name = args[0];
   final label = args[1];
-  final status = args[2];
-  final color = args[3];
-  var path = args[4];
-  final token = args[5];
-  final branch = args[6];
+  final icon = args[2];
+  final status = args[3];
+  final color = args[4];
+  var path = args[5];
+  final token = args[6];
+  final branch = args[7];
 
   if (!path.startsWith('/')) {
     path = '/$path';
@@ -35,7 +36,12 @@ void main(List<String> args) {
 
   final contents = safeDecode(shields.readAsStringSync());
 
-  contents[name] = {'label': label, 'status': status, 'color': color};
+  contents[name] = {
+    if (label.isNotEmpty) 'label': label,
+    if (icon.isNotEmpty) 'icon': icon,
+    'status': status,
+    'color': color
+  };
 
   shields.writeAsStringSync(jsonEncode(contents));
 
