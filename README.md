@@ -18,7 +18,7 @@ jobs:
       - id: date
         run: echo "##[set-output name=data;]$(date)"
       - name: Time badge
-        uses: RubbaBoy/BYOB@v1.1.0
+        uses: RubbaBoy/BYOB@v1.2.0
         with:
           NAME: time
           LABEL: 'Updated at'
@@ -36,6 +36,48 @@ Using this badge (Named `time`) in the repository `RubbaBoy/Example` is as simpl
 This badge looks like:
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/time)
+
+### Example Icon Workflows
+
+The following are some more example workflows using icons. They may either be an icon name from [badgen](https://badgen.net/), or a URL to an SVG. Only the `with` portion is shown, for simplicity.
+
+#### Icon With Label
+
+```yaml
+NAME: github
+LABEL: 'GitHub'
+ICON: 'github'
+STATUS: 'BYOBTest'
+COLOR: blue
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/github)
+
+#### Icon Without Label
+
+```yaml
+NAME: git
+ICON: 'git'
+STATUS: 'Git'
+COLOR: red
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/git)
+
+#### Custom Icon
+
+```yaml
+NAME: custom
+ICON: 'https://simpleicons.now.sh/counter-strike/e43'
+STATUS: 'Custom Icons'
+COLOR: red
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/custom)
+
 
 Other URL schemes are supported as well. The general scheme after `https://byob.yarr.is/` is:
 
@@ -71,6 +113,7 @@ All inputs are required except for the last one displayed below.
 | ------------ | --------------- | ------------------------------------------------------------ |
 | name         |                 | The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes. |
 | label        |                 | The left label of the badge, usually static.                 |
+| icon         |                 | An icon name from [badgen](https://badgen.net/), or an SVG URL |
 | status       |                 | The right status as the badge, usually based on results.     |
 | color        |                 | The hex color of the badge.                                  |
 | github_token |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |

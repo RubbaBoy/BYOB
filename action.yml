@@ -11,7 +11,12 @@ inputs:
     required: true
   label:
     description: 'The left label of the badge, usually static.'
-    required: true
+    required: false
+    default: ''
+  icon:
+    description: 'The badgen icon of the badge'
+    required: false
+    default: ''
   status:
     description: 'The right status as the badge, usually based on results.'
     required: true
@@ -35,6 +40,7 @@ runs:
   args:
     - ${{ inputs.name }}
     - ${{ inputs.label }}
+    - ${{ inputs.icon }}
     - ${{ inputs.status }}
     - ${{ inputs.color }}
     - ${{ inputs.path }}
