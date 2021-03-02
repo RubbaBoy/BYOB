@@ -2,9 +2,7 @@
  * Runnable on Cloudflare Workers
  */
 
-const badgeNamePattern = /^[a-z_\-\d]{0,32}$/i;
-const namePattern = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-const branchPattern = /^[a-z\d_\-]{0,255}$/i;
+const namePattern = /^\S+$/i;
 
 const error = 'FF0000';
 
@@ -21,14 +19,16 @@ async function handleRequest(request) {
     let branch = splitted[3] || 'shields';
     let path = splitted[4] || 'shields.json';
 
-    if (!badgeNamePattern.test(badgeName)) {
-        return sendResult(result, 'BYOB', 'Invalid badge name in request', error);
+    if (!namePattern.test(badgeName)) {
+        return sendResult('BYOB', 'Invalid badge name in request', error);
     }
+
     if (!namePattern.test(nameorg)) {
-        return sendResult(result, 'BYOB', 'Invalid github org name in request', error);
+        return sendResult('BYOB', 'Invalid github org name in request', error);
     }
-    if (!branchPattern.test(branch)) {
-        return sendResult(result, 'BYOB', 'Invalid branch name in request', error);
+
+    if (!namePattern.test(branch)) {
+        return sendResult('BYOB', 'Invalid branch name in request', error);
     }
 
     let res = await fetch(`https://raw.githubusercontent.com/${nameorg}/${repo}/${branch}/${path}`)

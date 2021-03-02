@@ -12,3 +12,8 @@ doc/api/
 
 .idea/
 *.iml
+
+dist/
+node_modules/
+worker/
+wrangler.toml
