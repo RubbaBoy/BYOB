@@ -39,7 +39,7 @@ inputs:
     required: false
     default: ''
   actor:
-    description: 'The account owner of a custom GitHub Access Token. Required if repository and custom token'
+    description: 'The account owner of a custom GitHub Access Token. Required if using a custom repository and custom token'
     required: false
     default: ''
 
