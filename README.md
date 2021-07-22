@@ -105,20 +105,43 @@ Badges may also use custom JSON paths, allowing for multiple files per project f
 
 An example of a repo with multiple badges may be found here: [BYOBTest](https://github.com/RubbaBoy/BYOBTest)
 
+### Private repos or alternative repos
+It is now possible to host the generated json file in an alternate public repo. Which would allow you to have an action that runs on a private repo to host the badge metadata in a public repo
+
+**The general steps are as follows:**
+* Login to GitHub and create a Personal Access Token. (Select repo scope) and copy generated secret
+* Go to the private repo where the action runs. Settings > Secrets > New repository secret
+* Name your secret according to how you want to reference it within the BYOB workflow step. i.e `${{ ACTIONS_TOKEN }}` so you can reference them like `${{ secrets.ACTIONS_TOKEN }}`
+* Define the two optional inputs `repository` and `actor` where repository is in the form `nameOrg/repoName` and the actor is the user who created the personal access token. 
+* Finally, follow the steps above to obtain your URL but replace the `orgName/repo` part with your public repo
+
+#### Example
+
+```yaml
+NAME: github
+LABEL: 'GitHub'
+ICON: 'github'
+STATUS: 'BYOBTest'
+COLOR: blue
+GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+REPOSITORY: RubbaBoy/BYOBTest
+ACTOR: RubbaBoy
+```
+
 ### Inputs
 
-All inputs are required except for the last one displayed below.
-
-| **Name**     | **Default**     | **Description**                                              |
-| ------------ | --------------- | ------------------------------------------------------------ |
-| name         |                 | The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes. |
-| label        |                 | The left label of the badge, usually static.                 |
-| icon         |                 | An icon name from [badgen](https://badgen.net/), or an SVG URL |
-| status       |                 | The right status as the badge, usually based on results.     |
-| color        |                 | The hex color of the badge.                                  |
-| github_token |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |
-| path         | `/shields.json` | The absolute file path to store the JSON data to.            |
-| branch       | `shields`       | The branch to contain the shields file.                      |
+| **Name**     | **Required** | **Default**     | **Description**                                              |
+| ------------ | ----- | --------------- | ------------------------------------------------------------ |
+| name         | yes |                 | The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes. |
+| label        | yes |                 | The left label of the badge, usually static.                 |
+| icon         | yes |                 | An icon name from [badgen](https://badgen.net/), or an SVG URL |
+| status       | yes |                 | The right status as the badge, usually based on results.     |
+| color        | yes |                 | The hex color of the badge.                                  |
+| github_token | yes |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |
+| path         | no  | `/shields.json` | The absolute file path to store the JSON data to.            |
+| branch       | no  | `shields`       | The branch to contain the shields file.                      |
+| repository   | no  |                 | Allows to publish json to an alternate repo. Useful to host the json in a public repo and have the action in a private repo.                      |
+| actor        | no  |                 | Required if repository is specified to use along with custom GitHub Access token                      |
 
 ## How It Works
 
@@ -127,4 +150,3 @@ BYOB is very simple, consisting of the GitHub Action and a small server-side scr
 When the Action is invoked, it will update only the badge names that have changed, to allow for more persistent data. Whenever a badge is invoked, a push is made to the repo updating the file. No badge data is stored server-side.
 
 The actual badges hosted by [Badgen](https://badgen.net/) (A great service, check it out if you have a chance!). The hosted endpoint uses the code [here](https://github.com/RubbaBoy/BYOB/blob/master/index.js). It reads the given repositories' JSON file containing shields data in it, and returns a Badgen-generated badge. This uses the static Badgen `/badge`  endpoint to allow for much less caching, as paired with GitHub's aggressive caching it can be extremely slow.
-
