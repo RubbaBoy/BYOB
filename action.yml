@@ -34,6 +34,10 @@ inputs:
     description: 'The branch to contain the shields file.'
     required: false
     default: 'shields'
+  repository:
+    description: 'The user/repo or org/repo where shields.json will get pushed to, as long as action has access'
+    required: false
+    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -46,3 +50,4 @@ runs:
     - ${{ inputs.path }}
     - ${{ inputs.github_token }}
     - ${{ inputs.branch }}
+    - ${{ inputs.repository }}

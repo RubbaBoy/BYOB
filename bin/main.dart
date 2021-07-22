@@ -14,13 +14,17 @@ void main(List<String> args) {
   var path = args[5];
   final token = args[6];
   final branch = args[7];
+  var repository = args[8];
 
   if (!path.startsWith('/')) {
     path = '/$path';
   }
+  if (repository.isEmpty) {
+    repository = env['GITHUB_REPOSITORY'].toString();
+  }
 
   final remote =
-      'https://${env['GITHUB_ACTOR']}:$token@github.com/${env['GITHUB_REPOSITORY']}.git';
+      'https://${env['GITHUB_ACTOR']}:$token@github.com/$repository.git';
 
   final cloneInto = 'repo-${DateTime.now().millisecondsSinceEpoch}';
 
