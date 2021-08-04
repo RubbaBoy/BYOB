@@ -16,7 +16,7 @@ async function handleRequest(request) {
     let [nameorg, repo, badgeName, branch, ...split_path ] = splitted
     branch = branch || 'shields';
     let path = 'shields.json';
-    if (typeof split_path !== 'undefined') {
+    if (split_path.length > 0) {
         path = split_path.join('/')
     }
 
