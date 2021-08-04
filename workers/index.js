@@ -13,11 +13,12 @@ const error = 'FF0000';
 async function handleRequest(request) {
     let url = new URL(request.url)
     let splitted = url.pathname.substr(1).split('/')
-    let nameorg = splitted[0];
-    let repo = splitted[1];
-    let badgeName = splitted[2];
-    let branch = splitted[3] || 'shields';
-    let path = splitted[4] || 'shields.json';
+    let [nameorg, repo, badgeName, branch, ...split_path ] = splitted
+    branch = branch || 'shields';
+    let path = 'shields.json';
+    if (split_path.length > 0) {
+        path = split_path.join('/')
+    }
 
     if (!namePattern.test(badgeName)) {
         return sendResult('BYOB', 'Invalid badge name in request', error);
