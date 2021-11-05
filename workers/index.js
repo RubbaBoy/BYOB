@@ -67,7 +67,7 @@ function loadBody(body) {
 
 async function sendResult(label, icon, status, color) {
     let res = await fetch(badgeUrl(label, icon, status, color))
-    let response = new Response(res.body, res)
+    let response = new Response(res.body)
     response.headers.append('ETag', Date.now())
     response.headers.append('Cache-Control', 'no-cache')
     response.headers.append('Pragma', 'no-cache')
