@@ -4,8 +4,6 @@
 
 const namePattern = /^\S+$/i;
 
-const error = 'FF0000';
-
 // Valid:
 // RubbaBoy/EmojIDE/badgeName
 // RubbaBoy/EmojIDE/badgeName/master
@@ -21,36 +19,36 @@ async function handleRequest(request) {
     }
 
     if (!namePattern.test(badgeName)) {
-        return sendResult('BYOB', 'Invalid badge name in request', error);
+        return sendError('BYOB', 'Invalid badge name in request', 400);
     }
 
     if (!namePattern.test(nameorg)) {
-        return sendResult('BYOB', 'Invalid github org name in request', error);
+        return sendError('BYOB', 'Invalid github org name in request', 400);
     }
 
     if (!namePattern.test(branch)) {
-        return sendResult('BYOB', 'Invalid branch name in request', error);
+        return sendError('BYOB', 'Invalid branch name in request', 400);
     }
 
     let res = await fetch(`https://raw.githubusercontent.com/${nameorg}/${repo}/${branch}/${path}`)
 
     if (res.status < 200 || res.status >= 300) {
-        return sendResult('BYOB', `No config found (${res.status})`, error);
+        return sendError('BYOB', `No config found (${res.status})`, 404);
     }
 
     let parsed = loadBody(await res.text());
 
     if (parsed === undefined) {
-        return sendResult('BYOB', 'Invalid file', error);
+        return sendError('BYOB', 'Invalid file', 400);
     }
 
     let currBadge = parsed[badgeName];
 
     if (currBadge === undefined) {
-        return sendResult('BYOB', 'Badge not found', error);
+        return sendError('BYOB', 'Badge not found', 404);
     }
 
-    return sendResult(currBadge['label'], currBadge['icon'], currBadge['status'], currBadge['color']);
+    return sendResult(currBadge['label'], currBadge['status'], currBadge['color'], currBadge['icon']);
 }
 
 addEventListener("fetch", event => {
@@ -65,14 +63,20 @@ function loadBody(body) {
     }
 }
 
-async function sendResult(label, icon, status, color) {
+async function sendError(label, status, statusCode) {
+    return sendResult(label, status, 'FF0000', undefined, statusCode)
+}
+
+async function sendResult(label, status, color, icon, statusCode = 200) {
     let res = await fetch(badgeUrl(label, icon, status, color))
-    let response = new Response(res.body)
-    response.headers.append('ETag', Date.now())
-    response.headers.append('Cache-Control', 'no-cache')
-    response.headers.append('Pragma', 'no-cache')
-    response.headers.append('Content-Type', 'image/svg+xml')
-    return response
+    return new Response(res.body, {
+        'status': statusCode, "headers": {
+            'ETag': Date.now().toString(),
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'Content-Type': 'image/svg+xml',
+        }
+    })
 }
 
 function badgeUrl(label, icon, status, color) {
