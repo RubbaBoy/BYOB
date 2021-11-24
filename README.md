@@ -70,7 +70,7 @@ GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ```yaml
 NAME: custom
-ICON: 'https://simpleicons.now.sh/counter-strike/e43'
+ICON: 'https://raw.githubusercontent.com/RubbaBoy/BYOBTest/master/icons/dollar.svg'
 STATUS: 'Custom Icons'
 COLOR: red
 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
