@@ -14,6 +14,7 @@ doc/api/
 *.iml
 
 dist/
+!workers/badgen/dist
 node_modules/
 worker/
 wrangler.toml

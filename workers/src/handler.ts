@@ -2,16 +2,19 @@
  * Runnable on Cloudflare Workers
  */
 
+import { badgen } from '../badgen/dist'
+import { parseIcon } from "./icon";
+
 const namePattern = /^\S+$/i;
 
 // Valid:
 // RubbaBoy/EmojIDE/badgeName
 // RubbaBoy/EmojIDE/badgeName/master
 // RubbaBoy/EmojIDE/badgeName/master/path/here/stuff.json
-async function handleRequest(request) {
+export async function handleRequest(request: Request): Promise<Response> {
     let url = new URL(request.url)
     let splitted = url.pathname.substr(1).split('/')
-    let [nameorg, repo, badgeName, branch, ...split_path ] = splitted
+    let [nameorg, repo, badgeName, branch, ...split_path] = splitted
     branch = branch || 'shields';
     let path = 'shields.json';
     if (split_path.length > 0) {
@@ -51,11 +54,7 @@ async function handleRequest(request) {
     return sendResult(currBadge['label'], currBadge['status'], currBadge['color'], currBadge['icon']);
 }
 
-addEventListener("fetch", event => {
-    return event.respondWith(handleRequest(event.request))
-})
-
-function loadBody(body) {
+function loadBody(body: string): any {
     try {
         return JSON.parse(body);
     } catch (_) {
@@ -63,37 +62,30 @@ function loadBody(body) {
     }
 }
 
-async function sendError(label, status, statusCode) {
+async function sendError(label: string, status: string, statusCode: number) {
     return sendResult(label, status, 'FF0000', undefined, statusCode)
 }
 
-async function sendResult(label, status, color, icon, statusCode = 200) {
-    let res = await fetch(badgeUrl(label, icon, status, color))
-    return new Response(res.body, {
-        'status': statusCode, "headers": {
+async function sendResult(label: string, status: string, color: string, icon: string | undefined, statusCode = 200) {
+    let usingIcon = await parseIcon(icon)
+
+    const svgString = badgen({
+        label: label || '',         // <Text>
+        labelColor: '555',          // <Color RGB> or <Color Name> (default: '555')
+        status: status || 'N/A',    // <Text>, required
+        color: color || 'blue',     // <Color RGB> or <Color Name> (default: 'blue')
+        style: 'classic',           // 'flat' or 'classic' (default: 'classic')
+        icon: usingIcon.base64,     // Use icon (default: undefined)
+        iconWidth: usingIcon.width, // Set this if icon is not square (default: 13)
+        scale: 1                    // Set badge scale (default: 1)
+    })
+
+    return new Response(svgString, {
+        'status': statusCode, 'headers': {
             'ETag': Date.now().toString(),
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache',
             'Content-Type': 'image/svg+xml',
         }
     })
-}
-
-function badgeUrl(label, icon, status, color) {
-    let statusString = 'N/A';
-    if (status !== undefined) {
-        statusString = encodeURIComponent(status)
-    }
-
-    let iconString = '';
-    if (icon !== undefined) {
-        iconString = `&icon=${icon}`
-    }
-
-    let labelString = '&label';
-    if (label !== undefined) {
-        labelString += `=${label}`
-    }
-
-    return `https://badgen.net/badge/_/${statusString}/${color || 'N/A'}?cache=300${iconString}${labelString}`
 }

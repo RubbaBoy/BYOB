@@ -66,7 +66,7 @@ GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/git)
 
-#### Custom Icon
+#### Custom Icon URL
 
 ```yaml
 NAME: custom
@@ -78,6 +78,19 @@ GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/custom)
 
+#### Custom Icon Inline SVG
+
+```yaml
+NAME: custom
+ICON: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iI0YwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0xMiAyMS4zNWwtMS40NS0xLjMyQzUuNCAxNS4zNiAyIDEyLjI4IDIgOC41IDIgNS40MiA0LjQyIDMgNy41IDNjMS43NCAwIDMuNDEuODEgNC41IDIuMDlDMTMuMDkgMy44MSAxNC43NiAzIDE2LjUgMyAxOS41OCAzIDIyIDUuNDIgMjIgOC41YzAgMy43OC0zLjQgNi44Ni04LjU1IDExLjU0TDEyIDIxLjM1eiIvPjwvc3ZnPg=='
+STATUS: 'Custom Icons'
+COLOR: blue
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The above `ICON` value is a Base64 encoded representation of a colored SVG [Material Icon](https://fonts.google.com/icons?selected=Material+Icons). This provides for great flexibility, with the benefit of keeping it local. The resulting icon is:
+
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/custom_inline)
 
 Other URL schemes are supported as well. The general scheme after `https://byob.yarr.is/` is:
 
@@ -131,17 +144,17 @@ ACTOR: RubbaBoy
 ### Inputs
 
 | **Name**     | **Required** | **Default**     | **Description**                                              |
-| ------------ | ----- | --------------- | ------------------------------------------------------------ |
-| name         | yes |                 | The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes. |
-| label        | yes |                 | The left label of the badge, usually static.                 |
-| icon         | yes |                 | An icon name from [badgen](https://badgen.net/), or an SVG URL |
-| status       | yes |                 | The right status as the badge, usually based on results.     |
-| color        | yes |                 | The hex color of the badge.                                  |
-| github_token | yes |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |
-| path         | no  | `/shields.json` | The absolute file path to store the JSON data to.            |
-| branch       | no  | `shields`       | The branch to contain the shields file.                      |
-| repository   | no  |                 | Allows to publish json to an alternate repo. Useful to host the json in a public repo and have the action in a private repo.                      |
-| actor        | no  |                 | Required if repository is specified to use along with custom GitHub Access token                      |
+| ------------ | ------------ | --------------- | ------------------------------------------------------------ |
+| name         | yes          |                 | The alphanumeric (-_ included) name of the badge, 32 chars or less. Used only for identification purposes. |
+| label        | yes          |                 | The left label of the badge, usually static.                 |
+| icon         | yes          |                 | An icon name from [badgen](https://badgen.net/), an SVG URL, or a Base64 Encoded representation of an SVG |
+| status       | yes          |                 | The right status as the badge, usually based on results.     |
+| color        | yes          |                 | The hex color of the badge.                                  |
+| github_token | yes          |                 | The GitHub token to push to the current repo. Suggested as `${{ secrets.GITHUB_TOKEN }}` |
+| path         | no           | `/shields.json` | The absolute file path to store the JSON data to.            |
+| branch       | no           | `shields`       | The branch to contain the shields file.                      |
+| repository   | no           |                 | Allows to publish json to an alternate repo. Useful to host the json in a public repo and have the action in a private repo. |
+| actor        | no           |                 | Required if repository is specified to use along with custom GitHub Access token |
 
 ## How It Works
 
@@ -149,4 +162,4 @@ BYOB is very simple, consisting of the GitHub Action and a small server-side scr
 
 When the Action is invoked, it will update only the badge names that have changed, to allow for more persistent data. Whenever a badge is invoked, a push is made to the repo updating the file. No badge data is stored server-side.
 
-The actual badges hosted by [Badgen](https://badgen.net/) (A great service, check it out if you have a chance!). The hosted endpoint uses the code [here](https://github.com/RubbaBoy/BYOB/blob/master/index.js). It reads the given repositories' JSON file containing shields data in it, and returns a Badgen-generated badge. This uses the static Badgen `/badge`  endpoint to allow for much less caching, as paired with GitHub's aggressive caching it can be extremely slow.
+The actual badges are generated by [Badgen](https://github.com/badgen/badgen) (A great service/API, check it out if you have a chance!). The hosted endpoint uses the code [here](https://github.com/RubbaBoy/BYOB/blob/master/workers/src/handler.ts). It reads the given repositories' JSON file containing shields data in it, and returns a Badgen-generated badge.
