@@ -76,6 +76,8 @@ COLOR: red
 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+It should be noted that icons pointing to external URLs are cached for 1 day. The resulting icon is:
+
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/custom)
 
 #### Custom Icon Inline SVG
