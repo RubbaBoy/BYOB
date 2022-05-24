@@ -2,8 +2,8 @@
  * Runnable on Cloudflare Workers
  */
 
-import { badgen } from '../badgen/dist'
-import { parseIcon } from "./icon";
+import { badgen } from 'badgen'
+import { parseIcon } from './icon'
 
 const namePattern = /^\S+$/i;
 

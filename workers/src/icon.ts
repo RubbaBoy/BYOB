@@ -1,4 +1,4 @@
-import icons from "../badgen/dist/icons.json"
+import icons from 'badgen-icons/icons.json'
 
 const cache = caches.default
 

@@ -5,7 +5,7 @@ Install [Cloudflare Wrangler](https://developers.cloudflare.com/workers/cli-wran
 wrangler init
 ```
 
-And put in your account/zone IDs, and then run
+And put in your account ID, and then run
 
 ```bash
 wrangler publish
