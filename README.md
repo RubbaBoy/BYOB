@@ -18,7 +18,7 @@ jobs:
       - id: date
         run: echo "##[set-output name=data;]$(date)"
       - name: Time badge
-        uses: RubbaBoy/BYOB@v1.2.1
+        uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: time
           LABEL: 'Updated at'
