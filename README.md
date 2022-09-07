@@ -39,7 +39,7 @@ This badge looks like:
 
 ### Example Icon Workflows
 
-The following are some more example workflows using icons. They may either be an icon name from [badgen](https://badgen.net/), or a URL to an SVG. Only the `with` portion is shown, for simplicity.
+The following are some more example workflows using icons. They may either be an icon name from [badgen](https://badgen.net/), or a URL to an SVG. Only the `with` portion, not including the `GITHUB_TOKEN`, is shown for simplicity.
 
 #### Icon With Label
 
@@ -49,7 +49,6 @@ LABEL: 'GitHub'
 ICON: 'github'
 STATUS: 'BYOBTest'
 COLOR: blue
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/github)
@@ -61,7 +60,6 @@ NAME: git
 ICON: 'git'
 STATUS: 'Git'
 COLOR: red
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/git)
@@ -73,12 +71,24 @@ NAME: custom
 ICON: 'https://raw.githubusercontent.com/RubbaBoy/BYOBTest/master/icons/dollar.svg'
 STATUS: 'Custom Icons'
 COLOR: red
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 It should be noted that icons pointing to external URLs are cached for 1 day. The resulting icon is:
 
 ![](https://byob.yarr.is/RubbaBoy/BYOBTest/custom)
+
+#### Emoji Icon
+
+```yaml
+NAME: emoji
+ICON: '😎'
+STATUS: 'Emojis'
+COLOR: purple
+```
+
+Emojis are rendered using [Twemoji](https://github.com/twitter/twemoji), with the above resulting badge being:
+
+![](https://byob.yarr.is/RubbaBoy/BYOBTest/emoji)
 
 #### Custom Icon Inline SVG
 
@@ -87,7 +97,6 @@ NAME: custom
 ICON: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjRweCIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjRweCIgZmlsbD0iI0YwMCI+PHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0xMiAyMS4zNWwtMS40NS0xLjMyQzUuNCAxNS4zNiAyIDEyLjI4IDIgOC41IDIgNS40MiA0LjQyIDMgNy41IDNjMS43NCAwIDMuNDEuODEgNC41IDIuMDlDMTMuMDkgMy44MSAxNC43NiAzIDE2LjUgMyAxOS41OCAzIDIyIDUuNDIgMjIgOC41YzAgMy43OC0zLjQgNi44Ni04LjU1IDExLjU0TDEyIDIxLjM1eiIvPjwvc3ZnPg=='
 STATUS: 'Custom Icons'
 COLOR: blue
-GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 The above `ICON` value is a Base64 encoded representation of a colored SVG [Material Icon](https://fonts.google.com/icons?selected=Material+Icons). This provides for great flexibility, with the benefit of keeping it local. The resulting icon is:

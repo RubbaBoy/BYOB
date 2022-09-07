@@ -1,4 +1,5 @@
 import icons from 'badgen-icons/icons.json'
+import twemoji from "twemoji";
 
 const cache = caches.default
 
@@ -22,9 +23,9 @@ function makeIcon(base64: string, width = 13, height = 13): Icon {
     } as Icon;
 }
 
-async function insertIntoCache(url: string, text: string | undefined, response: Response): Promise<Response> {
+async function insertIntoCache(url: string, text: string | undefined, response: Response, cacheControl: string = 's-maxage=86400'): Promise<Response> {
     response = new Response(text, response)
-    response.headers.append("Cache-Control", "s-maxage=86400") // Cache icons for 1 day
+    response.headers.append("Cache-Control", cacheControl) // Cache icons for 1 day by default
 
     if (text === undefined) {
         response.headers.append("x-cache-undefined", "true")
@@ -63,6 +64,41 @@ async function fetchIcon(url: string): Promise<string | undefined> {
     return response.text()
 }
 
+function getEmojiUrl(emoji: string): string | undefined {
+    let regex = /src="(.*?)"/
+
+    let res = twemoji.parse(emoji.replace('[\x00-\x7F]', ''), {
+        folder: 'svg',
+        ext: '.svg'
+    })
+
+    let match = res.match(regex)
+
+    if (match == undefined) {
+        return undefined
+    }
+
+    return match.length < 2 ? undefined : match[1];
+}
+
+async function makeEmojiIcon(emoji: string): Promise<Icon | undefined> {
+    let emojiUrl = getEmojiUrl(emoji)
+    if (emojiUrl == undefined) {
+        return undefined
+    }
+
+    const cacheKey = new Request(emojiUrl)
+    let response = await cache.match(cacheKey)
+
+    if (!response) {
+        let emojiResponse = await fetch(emojiUrl)
+        let svgText = await emojiResponse.text()
+        response = await insertIntoCache(emojiUrl, 'data:image/svg+xml;base64,' + btoa(svgText), emojiResponse, 's-maxage=2592000') // 30 days (arbitrary)
+    }
+
+    return makeIcon(await response.text())
+}
+
 export async function parseIcon(icon: string | undefined): Promise<Icon> {
     if (icon === undefined) {
         return defaultIcon
@@ -79,5 +115,15 @@ export async function parseIcon(icon: string | undefined): Promise<Icon> {
         }
     }
 
-    return (icons as any)[icon] || defaultIcon
+    let storedIcon = (icons as any)[icon]
+    if (storedIcon != undefined) {
+        return storedIcon
+    }
+
+    let emojiIcon = await makeEmojiIcon(icon)
+    if (emojiIcon != undefined) {
+        return emojiIcon
+    }
+
+    return defaultIcon
 }

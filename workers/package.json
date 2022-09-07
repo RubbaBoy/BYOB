@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "badgen": "^3.2.2",
-    "badgen-icons": "^0.22.0"
+    "badgen-icons": "^0.22.0",
+    "twemoji": "^14.0.2"
   }
 }

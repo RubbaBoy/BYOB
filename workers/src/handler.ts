@@ -4,6 +4,7 @@
 
 import { badgen } from 'badgen'
 import { parseIcon } from './icon'
+import twemoji from "twemoji";
 
 const namePattern = /^\S+$/i;
 
